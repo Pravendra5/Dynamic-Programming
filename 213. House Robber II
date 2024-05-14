@@ -1,0 +1,69 @@
+// Approach -1 DFS
+
+class Solution {
+    int t[] = new int[101];
+
+    int solve(int[] nums, int i, int n){
+
+        if(i > n) return 0;
+
+        if(t[i] != -1) return t[i];
+
+        int take = nums[i] + solve(nums, i+2, n);
+        int skip = solve(nums, i+1, n);
+
+        return t[i] = Math.max(take, skip);
+    }
+
+    int rob(int[] nums) {
+       
+        int n = nums.length;
+
+        if(n == 1) return nums[0];
+
+        if(n == 2) return Math.max(nums[0], nums[1]);
+        
+
+        Arrays.fill(t, -1);
+
+        int take_0_index = solve(nums, 0, n-2);
+
+        Arrays.fill(t, -1);
+
+        int take_1_index = solve(nums, 1, n-1);
+
+        return Math.max(take_0_index, take_1_index);
+
+    }
+}
+
+// Approach -2 BFS
+
+class Solution {
+    int n;
+
+    int rob(int[] nums) {
+        n = nums.length;
+        if (n == 1)
+            return nums[0];
+
+        int[] t1 = new int[n + 1];
+        int[] t2 = new int[n + 1];
+
+        // Case-1 (Take from 1st House - Hence skip the last house)
+        t1[0] = 0;
+        for (int i = 1; i <= n - 1; i++) {
+            t1[i] = Math.max(t1[i - 1], nums[i - 1] + ((i - 2 >= 0) ? t1[i - 2] : 0));
+        }
+        int result1 = t1[n - 1];
+
+        // Case-2 (Take from 2nd House - Hence take the last house)
+        Arrays.fill(t2, 0);
+        for (int i = 2; i <= n; i++) {
+            t2[i] = Math.max(t2[i - 1], nums[i - 1] + ((i - 2 >= 0) ? t2[i - 2] : 0));
+        }
+        int result2 = t2[n];
+
+        return Math.max(result1, result2);
+    }
+}
